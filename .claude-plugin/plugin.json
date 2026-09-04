@@ -2,5 +2,7 @@
   "name": "keel",
   "description": "Sets up and maintains a project's AI development harness — CLAUDE.md, permission rules, coding standards, and agent configuration.",
   "version": "0.1.0",
-  "author": { "name": "Geonwoo Park" }
+  "author": { "name": "Geonwoo Park" },
+  "homepage": "https://github.com/mirunamu00/keel",
+  "license": "MIT"
 }

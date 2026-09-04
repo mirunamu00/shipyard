@@ -109,6 +109,13 @@ its templates.** Claude Code decides whether `/plugin update` has anything to fe
 by comparing that version. If you ship a prompt fix without bumping it, installed
 users stay on the old version and will not know.
 
+`plugin.json`'s `description` deliberately describes **keel as a whole**, including
+the planned skills in [Roadmap](#roadmap) — permission rules and coding standards
+are named there but are not yet produced by `/keel:setup` alone. `SKILL.md`'s
+`description` is the narrower, accurate one: it must always match exactly what
+`/keel:setup` writes today, because that is what the model reads to decide what the
+skill does.
+
 Repository layout:
 
 ```
@@ -133,3 +140,7 @@ To test changes locally, from this repo's root:
 
 Then `cd` to a **different, empty directory** before running `/keel:setup` — running
 it inside this repo will set up this repo.
+
+## License
+
+[MIT](LICENSE) © Geonwoo Park
