@@ -89,12 +89,17 @@ for (const { name, dir } of pluginDirs) {
 // where the population is real.
 
 // ── 3. stale references from earlier repo/marketplace names ────────────────
+// The failure mode is a stale install command or link, not prose ABOUT the old
+// names — docs that name them inside `inline code` are correct and must not trip
+// this. Fenced code blocks are still scanned, so real instructions stay caught.
 const STALE = [/mirunamu00\/keel\b/, /keel@keel\b/]
+const stripInlineCode = (s) => s.replace(/(?<!`)`[^`\n]+`(?!`)/g, '')
 for (const f of walk(ROOT).filter((p) => /\.(md|json|ya?ml|mjs)$/.test(p))) {
   const r = rel(f)
   if (r.startsWith('.git/') || r === 'scripts/validate.mjs') continue
+  const text = r.endsWith('.md') ? stripInlineCode(read(f)) : read(f)
   for (const re of STALE) {
-    if (re.test(read(f))) fail('stale-ref', `${r}: stale reference matching ${re}`)
+    if (re.test(text)) fail('stale-ref', `${r}: stale reference matching ${re}`)
   }
 }
 

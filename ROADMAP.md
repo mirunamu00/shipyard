@@ -46,6 +46,16 @@ before being trusted, then reverted to green. Two results worth recording:
   the only files that may carry `<placeholder>` stubs are the templates, where they
   are correct, so the check had no valid population and would have passed vacuously.
   That responsibility lives in `/keel:audit` §1.5, where the population is real.
+- `stale-ref` fired on the table above — the documentation *describing* the check
+  names the old ids, and the first draft matched them. Narrowed to ignore inline
+  code spans in Markdown while still scanning fenced blocks, since the real failure
+  mode is a stale install command, not prose about one. Re-proven red twice: on a
+  bare prose mention, and on an install command inside a fenced block.
+
+**Process note, paid for once.** The gate was run as `node scripts/validate.mjs |
+tail -2` inside a `&&` chain; the pipe replaced the script's exit code with `tail`'s,
+so a red gate reported green and the commit went out anyway. Run gates unpiped, and
+read the exit code — a gate whose failure cannot stop the commit is not a gate.
 
 **Dependency audit.** This repo ships no runtime dependencies and has no
 `package.json`; its dependency surface is the GitHub Actions it invokes. The
