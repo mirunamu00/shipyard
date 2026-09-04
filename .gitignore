@@ -5,3 +5,5 @@ Thumbs.db
 .env
 .env.*
 .claude/settings.local.json
+evals/results/
+.claude/settings.json

@@ -63,22 +63,63 @@ read the exit code — a gate whose failure cannot stop the commit is not a gate
 for one. If a runtime dependency is ever added, a real audit workflow becomes a new
 milestone — do not quietly stretch `action-pin` to cover it.
 
-### Open, not waived — evals
+### As-built — evals (done, via our own runner)
 
-`claude plugin eval` is gated behind early access on this account: both
+`claude plugin eval` is gated behind the server-side flag
+`tengu_gb_eval_authed_enable` and is unavailable on this account — both
 `eval init --bare` and `eval <target>` return "`plugin eval` is currently in early
-access". The case schema could be guessed from `--help`, but an eval suite that was
-never executed is an instrument that has not been proven to run at all — worse than
-absent, by this project's own Law 8. Nothing was written.
+access". Rather than wait, `scripts/eval.mjs` runs the same idea against the real
+CLI with no dependency on that command.
 
-**Trigger.** `claude plugin eval --help` stops reporting early access on this
-account, or the case-file schema is published.
+Each case runs headlessly in a throwaway directory under an isolated
+`CLAUDE_CONFIG_DIR`, with the plugin supplied by `--plugin-dir` from this working
+tree — so the result reflects the code about to be pushed, not whatever is installed
+on the machine. Cases are graded on the transcript **and** on the filesystem
+afterwards, under `bypassPermissions`, so "wrote nothing" is a real observation
+rather than a permission artifact.
 
-**What to build then.** One case per shipped skill, each with a grader:
-`/keel:setup` must complete Phase 0 questioning without writing a single file;
-`/keel:audit` must produce ranked findings and must not write, edit, or mutate git
-state. Run with `--ablation with-without` so a case that passes without the plugin
-loaded is caught as vacuous.
+| Case | What it proves |
+| --- | --- |
+| `setup-interviews-before-writing` | Phase 0/1 interviews and writes no file before confirmation |
+| `setup-does-not-autofire` | a near-paraphrase of the skill description does not trigger it |
+| `audit-reports-absent-harness` | reports the missing constitution, recommends setup, writes nothing |
+| `audit-finds-planted-write-grant` | **finds a planted defect** — a `security-reviewer` seeded with a `Write` grant — and mutates nothing |
+
+The last case is the one that matters: it does not watch for success, it plants the
+violation `/keel:audit` exists to catch and requires it to be caught.
+
+**Ablation.** Cases marked `ablate` rerun with the plugin absent. If the graders
+still pass, the case is measuring the base model rather than this repo and is
+reported `vacuous` — a failure, not a pass. Both audit cases were confirmed to fail
+without the plugin.
+
+**Cost.** Every case is a real API call, so this is not wired into CI by default.
+Run it after prompt edits and before a release. Requires `ANTHROPIC_API_KEY`; the
+runner refuses to fall back to the ambient config, because the ablation arm would
+then still see an installed copy and every case would pass for the wrong reason.
+
+### Open, not waived — the `$ARGUMENTS` grader
+
+A grader asserting that `/keel:setup <description>` seeds Q1 instead of asking from
+zero was written, failed, and was removed rather than left red or silently deleted.
+
+**Measured, not assumed.** The transcript said "the invocation came with no project
+description attached". A control run with the plugin **installed normally** and the
+same prompt produced a fully Tauri-specific plan — app name, toolchain probe, WebView2
+checks — so the behaviour works on the path users actually take. `$ARGUMENTS` does not
+survive `--plugin-dir` under an isolated config, which is precisely the arrangement a
+valid ablation requires.
+
+A second control run meant to separate `--plugin-dir` from config isolation was
+**inconclusive**: its output was filtered through a pattern match instead of being
+kept, so nothing was left to read — this repo's own Law 2 violated while enforcing it.
+It was not repeated, because neither answer changes the decision: under either cause
+the eval harness cannot observe the behaviour, and the user-facing path is proven
+working.
+
+**Trigger.** The harness gains a way to deliver slash-command arguments under
+`--plugin-dir`, or evals move to `claude plugin eval` once early access opens. Restore
+the grader then; it is left commented in `evals/cases.mjs` with this reasoning.
 
 ## M2 — `/keel:milestone`
 

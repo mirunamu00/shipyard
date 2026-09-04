@@ -106,6 +106,7 @@ on the old version without knowing. CI enforces this — see below.
 node scripts/validate.mjs                    # structural gates
 node scripts/validate.mjs --since <base-ref> # ...plus the version-bump rule
 claude plugin validate .                     # manifest schema, via the CLI
+node scripts/eval.mjs                        # behavioural gates (costs tokens)
 ```
 
 `scripts/validate.mjs` runs in CI on every push and PR
@@ -123,6 +124,20 @@ Run both before pushing.
 Every check was RED-proven against a planted violation before being trusted; the
 findings that produced, including one check that was vacuous on its first draft, are
 recorded in [ROADMAP.md § M1](ROADMAP.md#m1--dogfood-gates-ci-and-evals-for-shipyard-itself).
+
+`scripts/eval.mjs` is the behavioural half: it runs each skill headlessly against the
+real CLI in a throwaway directory and grades the transcript **and** the filesystem
+afterwards. Structural gates prove a `SKILL.md` parses; only an eval proves the skill
+still interviews before writing. It needs `ANTHROPIC_API_KEY` and costs tokens per
+case, so it is not wired into CI — run it after editing a prompt and before a release:
+
+```
+node scripts/eval.mjs                                  # all cases + ablation arms
+node scripts/eval.mjs --case audit --no-ablation        # one case, cheaply
+```
+
+Cases marked `ablate` rerun with the plugin absent; if they still pass they are
+reported `vacuous`, because they are measuring the base model rather than this repo.
 
 Local testing, from the repo root:
 
