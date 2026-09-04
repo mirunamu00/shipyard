@@ -33,8 +33,9 @@ later session works under.
 | Skill | What it does |
 | --- | --- |
 | `/keel:setup` | Interviews you about the product, stack, and verification reality, then writes `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `docs/`, CI, and the code/release gates — tailored to the codebase |
+| `/keel:audit` | Checks an existing harness against the laws it claims to follow — read-only by tool grant, ranked findings with `file:line` evidence |
 
-Planned: `/keel:audit`, `/keel:refresh`, `/keel:standards`. See
+Planned: `/keel:refresh`, `/keel:standards`. See
 [plugins/keel/README.md](plugins/keel/README.md).
 
 ## Repository layout

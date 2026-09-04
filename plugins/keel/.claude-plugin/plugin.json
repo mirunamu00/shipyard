@@ -1,7 +1,7 @@
 {
   "name": "keel",
   "description": "Everything a project needs laid down at the start — the constitution, the agent roster, the review gates, the docs record system, and the verification wiring every later session works under.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": { "name": "Geonwoo Park" },
   "homepage": "https://github.com/mirunamu00/shipyard/tree/main/plugins/keel",
   "license": "MIT"

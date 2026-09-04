@@ -20,8 +20,9 @@ fitted to it.
 | Skill | What it does |
 | --- | --- |
 | `/keel:setup` | Builds a project's AI development harness from scratch |
+| `/keel:audit` | Checks an existing harness against the laws it claims to follow — read-only, ranked findings |
 
-Planned: `/keel:audit`, `/keel:refresh`, `/keel:standards` — see [Roadmap](#roadmap).
+Planned: `/keel:refresh`, `/keel:standards` — see [Roadmap](#roadmap).
 
 ---
 
@@ -97,13 +98,41 @@ consistent across projects.
    parked there with a trigger condition. Those triggers are yours to honor.
 6. **Confirm no `<placeholder>` survived** anywhere in the generated files.
 
+## `/keel:audit`
+
+Run it in a project whose harness already exists:
+
+```
+/keel:audit
+```
+
+It reads the constitution, the agent roster, the skills, the docs, and the CI
+wiring, runs the tier-1 gates in check mode, and reports ranked findings — each
+with `file:line` evidence, the law it violates, and a concrete prescription. It is
+**read-only by tool grant**: it never edits, never fixes, and never mutates git
+state — the same constraint keel imposes on the review agents it generates.
+
+What it hunts, in the order the harness usually rots:
+
+- **Silently absent protection** — a reviewer whose tool grant lets it write, a
+  guard passing vacuously over zero files, a secret file tracked in git, a
+  checklist item nothing can fulfil, a milestone-number collision waiting in the
+  live pointer.
+- **Drift** — the gate-checklist skill diverging from the constitution's checklist,
+  a standing decree recorded in CLAUDE.md but missing from the agent briefs that
+  could violate it, mirrored lines with no named source of truth.
+- **Expired deferrals** — BACKLOG entries whose trigger condition already happened
+  ("first scaffold commit", fifty commits ago) and quietly became permanent holes.
+- **Dishonest records** — as-built numbers with no where-and-how of measurement,
+  leftover `<placeholder>` stubs in files every session loads.
+
+The report ends with an explicit "not checked — open, not waived" list, because an
+audit that hides its own coverage gaps is the exact defect it exists to catch.
+
 ## Roadmap
 
 More skills for the early phase of a project, in rough priority order:
 
-- **`/keel:audit`** — check an existing harness against the laws it claims to
-  follow: stale mirrored lines, agents missing required brief sections, reviewers
-  with write grants, gates listed but never run.
 - **`/keel:refresh`** — bring a harness written under an older keel up to the
   current template shape, without clobbering project-specific content.
 - **`/keel:standards`** — extract coding standards from an existing codebase and
