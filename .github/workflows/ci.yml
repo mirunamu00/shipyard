@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    name: structural gates
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to a commit SHA, not a tag — a tag is mutable and this repo's
+      # actions are its entire dependency surface. scripts/validate.mjs enforces
+      # this on itself; see the action-pin check.
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          # Need the previous commit so the version-bump rule has a base to
+          # diff against. depth 2 covers push; PRs get the merge-base below.
+          fetch-depth: 0
+
+      - name: Resolve base ref for the version-bump rule
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ref=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ github.event.before }}" ] && git cat-file -e "${{ github.event.before }}^{commit}" 2>/dev/null; then
+            echo "ref=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Structural gates
+        run: |
+          if [ -n "${{ steps.base.outputs.ref }}" ]; then
+            node scripts/validate.mjs --since "${{ steps.base.outputs.ref }}"
+          else
+            echo "No usable base ref — running without the version-bump rule."
+            node scripts/validate.mjs
+          fi

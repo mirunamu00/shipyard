@@ -43,6 +43,10 @@ stages (release, mid-life refit) — lives in [ROADMAP.md](ROADMAP.md).
 ```
 .claude-plugin/
   marketplace.json          # the shipyard marketplace — lists every plugin below
+.github/workflows/
+  ci.yml                    # structural gates on every push and PR
+scripts/
+  validate.mjs              # the gates — zero deps, same command locally and in CI
 assets/
   shipyard.svg              # the marketplace icon
 plugins/
@@ -94,7 +98,31 @@ clone and all — no warning, no prompt. Keep `shipyard` distinctive.
 **Bump `version` in the changed plugin's `plugin.json` on every change to its skills
 or templates.** Claude Code decides whether `/plugin update` has anything to fetch by
 comparing that version. Ship a prompt fix without bumping it and installed users stay
-on the old version without knowing.
+on the old version without knowing. CI enforces this — see below.
+
+### Gates
+
+```
+node scripts/validate.mjs                    # structural gates
+node scripts/validate.mjs --since <base-ref> # ...plus the version-bump rule
+claude plugin validate .                     # manifest schema, via the CLI
+```
+
+`scripts/validate.mjs` runs in CI on every push and PR
+([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). It has no dependencies and
+needs no secrets, so the command is identical locally and in CI. It checks manifest
+integrity, cross-manifest name agreement, skill frontmatter, that every template a
+`SKILL.md` references exists, that no pre-shipyard naming survives, that every
+GitHub Action is pinned to a commit SHA, and — given a base ref — the version-bump
+rule above.
+
+`claude plugin validate .` is complementary, not redundant: it checks the manifest
+against the CLI's own schema, which is the authority on what Claude Code will load.
+Run both before pushing.
+
+Every check was RED-proven against a planted violation before being trusted; the
+findings that produced, including one check that was vacuous on its first draft, are
+recorded in [ROADMAP.md § M1](ROADMAP.md#m1--dogfood-gates-ci-and-evals-for-shipyard-itself).
 
 Local testing, from the repo root:
 

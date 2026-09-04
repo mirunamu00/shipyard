@@ -12,19 +12,63 @@ keel's (early phase) — lifecycle stage is the boundary, not feature count.
 
 ## M1 — Dogfood gates: CI and evals for shipyard itself
 
-**Status:** planned
+**Status:** CI shipped · evals open, not waived
 
-**Goal.** A GitHub Actions workflow (SHA-pinned) running `claude plugin validate .`
-on every push and PR, plus `evals/` cases for the existing skills run via
-`claude plugin eval`: setup must interview before writing anything, audit must stay
-read-only and produce ranked findings.
+**Why first.** This repo preaches day-one verification wiring and had none — the
+exact finding `/keel:audit` would open with elsewhere. The marketplace that ships
+the laws goes first.
 
-**Why first.** This repo preaches day-one verification wiring and currently has
-none — the exact finding `/keel:audit` would open with elsewhere. The marketplace
-that ships the laws goes first.
+### As-built — CI (done)
 
-**Done when.** CI is green on main; at least one eval case per shipped skill; a
-red eval was observed once (non-vacuity, Law 8) before being trusted.
+`.github/workflows/ci.yml` runs `scripts/validate.mjs` on every push to main, every
+PR, and on demand. Zero dependencies, no secrets, no network: it is the same command
+on a laptop and in CI. Seven checks:
+
+| Check | What it catches |
+| --- | --- |
+| `marketplace` | manifest missing/invalid; a plugin `source` that does not resolve |
+| `plugin` | plugin.json missing required fields; name disagreeing with its marketplace entry; non-semver version |
+| `skill` | a skill with no `SKILL.md`, no frontmatter, or no `description` |
+| `template` | a SKILL.md telling the session to read a `templates/<file>` that does not exist |
+| `stale-ref` | leftover `mirunamu00/keel` / `keel@keel` from the pre-shipyard naming |
+| `action-pin` | a GitHub Action referenced by mutable tag instead of a 40-char commit SHA |
+| `version-bump` | a plugin's skills changed without its `version` changing — installed users would never see it |
+
+**Non-vacuity (Law 8).** Every check was RED-proven against a planted violation
+before being trusted, then reverted to green. Two results worth recording:
+
+- `action-pin` **did not go red** on the first attempt. Its pattern was `^\s*uses:`,
+  but real workflow steps are written `- uses:` — the check would have passed on
+  every workflow forever. Fixed to `^\s*-?\s*uses:` and re-proven red on
+  `actions/checkout@v4`, green on a SHA. This is the whole argument for RED-proof
+  in one finding.
+- A placeholder-leak check was written, then **deliberately removed**: in this repo
+  the only files that may carry `<placeholder>` stubs are the templates, where they
+  are correct, so the check had no valid population and would have passed vacuously.
+  That responsibility lives in `/keel:audit` §1.5, where the population is real.
+
+**Dependency audit.** This repo ships no runtime dependencies and has no
+`package.json`; its dependency surface is the GitHub Actions it invokes. The
+`action-pin` check is therefore this project's dependency audit, not a substitute
+for one. If a runtime dependency is ever added, a real audit workflow becomes a new
+milestone — do not quietly stretch `action-pin` to cover it.
+
+### Open, not waived — evals
+
+`claude plugin eval` is gated behind early access on this account: both
+`eval init --bare` and `eval <target>` return "`plugin eval` is currently in early
+access". The case schema could be guessed from `--help`, but an eval suite that was
+never executed is an instrument that has not been proven to run at all — worse than
+absent, by this project's own Law 8. Nothing was written.
+
+**Trigger.** `claude plugin eval --help` stops reporting early access on this
+account, or the case-file schema is published.
+
+**What to build then.** One case per shipped skill, each with a grader:
+`/keel:setup` must complete Phase 0 questioning without writing a single file;
+`/keel:audit` must produce ranked findings and must not write, edit, or mutate git
+state. Run with `--ablation with-without` so a case that passes without the plugin
+loaded is caught as vacuous.
 
 ## M2 — `/keel:milestone`
 
