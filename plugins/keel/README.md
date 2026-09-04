@@ -131,12 +131,10 @@ audit that hides its own coverage gaps is the exact defect it exists to catch.
 
 ## Roadmap
 
-More skills for the early phase of a project, in rough priority order:
-
-- **`/keel:refresh`** — bring a harness written under an older keel up to the
-  current template shape, without clobbering project-specific content.
-- **`/keel:standards`** — extract coding standards from an existing codebase and
-  write them into `CLAUDE.md` as enforceable, guard-backed rules rather than prose.
+Planned keel skills (`/keel:milestone`, `/keel:standards`, `/keel:decree`,
+`/keel:refresh`) and their ordering live in the repo-level
+[ROADMAP.md](../../ROADMAP.md) — that file is the source of truth; this section
+deliberately does not restate it.
 
 ## Contributing
 

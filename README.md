@@ -35,8 +35,8 @@ later session works under.
 | `/keel:setup` | Interviews you about the product, stack, and verification reality, then writes `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `docs/`, CI, and the code/release gates — tailored to the codebase |
 | `/keel:audit` | Checks an existing harness against the laws it claims to follow — read-only by tool grant, ranked findings with `file:line` evidence |
 
-Planned: `/keel:refresh`, `/keel:standards`. See
-[plugins/keel/README.md](plugins/keel/README.md).
+What comes next — more keel skills, and sibling plugins for later lifecycle
+stages (release, mid-life refit) — lives in [ROADMAP.md](ROADMAP.md).
 
 ## Repository layout
 
