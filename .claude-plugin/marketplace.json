@@ -5,8 +5,10 @@
   "plugins": [
     {
       "name": "keel",
-      "source": "./",
-      "description": "Lay the keel before you build. Project-level tooling that gives Claude the context, guardrails, and configuration it needs to work well in your codebase."
+      "source": "./plugins/keel",
+      "description": "Lay the keel before you build. Everything a project needs at the start — the constitution, the agent roster, the review gates, and the verification wiring every later session works under.",
+      "category": "development",
+      "homepage": "https://github.com/mirunamu00/shipyard/tree/main/plugins/keel"
     }
   ]
 }
