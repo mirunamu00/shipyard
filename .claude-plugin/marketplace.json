@@ -1,5 +1,6 @@
 {
   "name": "keel",
+  "description": "Project-level tooling for Claude Code — set up and maintain a codebase's AI development harness, then keep it honest as the project grows.",
   "owner": { "name": "Geonwoo Park" },
   "plugins": [
     {
