@@ -73,6 +73,11 @@ Ask in batches (≤4 questions per message, with recommended options where you c
 until you can answer ALL of the following. Never fill an answer by assumption — a wrong
 foundation here compounds with every later session.
 
+The conversation BEFORE this skill was invoked counts as interview input. The user's own
+prior words are not assumption: where earlier discussion already answers a question below,
+do not re-ask it — carry the answer forward and surface it in the Phase-1 summary (which
+the user confirms anyway). Re-ask only what is genuinely unanswered or ambiguous.
+
 1. **Product.** What is it, in one paragraph? Who is the target user — be specific; persona
    shapes every priority (an expert user wants density and keyboard speed; a novice wants
    guidance).
