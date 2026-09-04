@@ -1,6 +1,8 @@
-# keel
+# shipyard
 
 > Lay the keel before you build — a Claude Code plugin that sets up a project's AI development harness: CLAUDE.md, permissions, standards, and agent config.
+
+**shipyard** is a Claude Code marketplace. It currently holds one plugin: **keel**.
 
 **keel** is project-level tooling for Claude Code. It gives Claude the context,
 guardrails, and configuration it needs to work well in your codebase — and keeps
@@ -10,14 +12,14 @@ The keel is the first timber laid in a ship, and every frame is fitted to it. Sa
 idea here: the harness goes down first, and everything a later session builds is
 fitted to it.
 
-Today the plugin ships one skill, `/keel:setup`. More are planned — see
+Today keel ships one skill, `/keel:setup`. More are planned — see
 [Roadmap](#roadmap).
 
 ## Install
 
 ```
-/plugin marketplace add mirunamu00/keel
-/plugin install keel@keel
+/plugin marketplace add mirunamu00/shipyard
+/plugin install keel
 ```
 
 Then, in the project you want to set up:
@@ -121,7 +123,7 @@ Repository layout:
 ```
 .claude-plugin/
   plugin.json        # plugin manifest — name, description, version
-  marketplace.json   # marketplace manifest — this repo as a single-plugin marketplace
+  marketplace.json   # marketplace manifest — the shipyard marketplace, holding keel
 skills/
   setup/
     SKILL.md         # the /keel:setup prompt
@@ -131,12 +133,26 @@ skills/
 `plugin.json` and `marketplace.json` live only in `.claude-plugin/`. `skills/` lives
 at the repo root. Moving either one breaks plugin loading.
 
+Three names, independent of each other:
+
+| Name | Where it is set | What it controls |
+| --- | --- | --- |
+| `shipyard` | `marketplace.json` → `name` | the marketplace, and the `@shipyard` suffix |
+| `keel` | `plugin.json` → `name` | the plugin, and the `/keel:` skill prefix |
+| `setup` | `skills/setup/` directory | the skill, giving `/keel:setup` |
+
+Marketplace names are a single global namespace on each user's machine — adding a
+second marketplace with the same name silently replaces the first, cache and all.
+Keep `shipyard` distinctive.
+
 To test changes locally, from this repo's root:
 
 ```
-/plugin marketplace add .
-/plugin install keel@keel
+/plugin marketplace add ./
+/plugin install keel
 ```
+
+A bare `.` is rejected by the source-format check — it must be `./`.
 
 Then `cd` to a **different, empty directory** before running `/keel:setup` — running
 it inside this repo will set up this repo.
