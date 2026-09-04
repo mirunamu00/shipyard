@@ -22,7 +22,7 @@ fitted to it.
 | `/keel:setup` | Builds a project's AI development harness from scratch |
 | `/keel:audit` | Checks an existing harness against the laws it claims to follow — read-only, ranked findings |
 
-Planned: `/keel:refresh`, `/keel:standards` — see [Roadmap](#roadmap).
+Planned skills live in the repo-level [ROADMAP.md](../../ROADMAP.md).
 
 ---
 
