@@ -1,4 +1,8 @@
-# shipyard
+<p align="center">
+  <img src="assets/shipyard.svg" width="128" alt="shipyard — hull frames rising from a laid keel">
+</p>
+
+<h1 align="center">shipyard</h1>
 
 > A Claude Code marketplace of project-level tooling — plugins that give Claude the context, guardrails, and configuration it needs to work well in a codebase.
 
@@ -38,6 +42,8 @@ Planned: `/keel:audit`, `/keel:refresh`, `/keel:standards`. See
 ```
 .claude-plugin/
   marketplace.json          # the shipyard marketplace — lists every plugin below
+assets/
+  shipyard.svg              # the marketplace icon
 plugins/
   keel/
     .claude-plugin/
