@@ -1,0 +1,11 @@
+{
+  "name": "keel",
+  "owner": { "name": "Geonwoo Park" },
+  "plugins": [
+    {
+      "name": "keel",
+      "source": "./",
+      "description": "Lay the keel before you build. Project-level tooling that gives Claude the context, guardrails, and configuration it needs to work well in your codebase."
+    }
+  ]
+}
